@@ -1,8 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
+from collections import Counter
 
 
-def temizle(kelimeler):
+def kelime_temizle(kelimeler):
+    silinecek_kelimeler = ["ve", "ile", "de", "da", "den", "dan", "ten", "tan", "iken", "vs", "vb"]
+    for kelime in kelimeler:
+        for silinecek in silinecek_kelimeler:
+            if (kelime == silinecek):
+                kelimeler.remove(kelime)
+
+    return kelimeler
+
+
+def sembol_temizle(kelimeler):
     semboller = "!'^+%&/()=?_>£#$½¾{[]}\|<>|@€.,:;`˙"
     new_kelimeler = []
     for kelime in kelimeler:
@@ -11,6 +22,7 @@ def temizle(kelimeler):
                 kelime = kelime.replace(sembol, "")
         if (len(kelime) > 0):
             new_kelimeler.append(kelime)
+
     return new_kelimeler
 
 
@@ -29,6 +41,7 @@ for i in soup.find_all("p"):
     for j in kelimeler:
         tum_kelimeler.append(j)
 
-tum_kelimeler = temizle(tum_kelimeler)
-for i in tum_kelimeler:
-    print(i)
+tum_kelimeler = sembol_temizle(tum_kelimeler)
+tum_kelimeler = kelime_temizle(tum_kelimeler)
+
+print(Counter(tum_kelimeler))
